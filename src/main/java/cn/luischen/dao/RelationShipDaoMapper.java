@@ -4,6 +4,7 @@ import cn.luischen.model.RelationShipDomain;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -11,9 +12,8 @@ import java.util.List;
  * 中间表
  * Created by winterchen on 2018/4/30.
  */
-@Mapper
-@Component
-public interface RelationShipDao {
+@Repository
+public interface RelationShipDaoMapper {
 
     /**
      * 添加

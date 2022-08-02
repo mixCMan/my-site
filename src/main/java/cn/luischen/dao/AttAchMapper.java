@@ -4,14 +4,15 @@ import cn.luischen.dto.AttAchDto;
 import cn.luischen.model.AttAchDomain;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * Created by winterchen on 2018/4/29.
  */
-@Mapper
-public interface AttAchDao {
+@Repository
+public interface AttAchMapper {
 
 
     /**

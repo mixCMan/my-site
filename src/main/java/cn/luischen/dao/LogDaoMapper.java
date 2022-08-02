@@ -3,14 +3,15 @@ package cn.luischen.dao;
 import cn.luischen.model.LogDomain;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * Created by winterchen on 2018/4/29.
  */
-@Mapper
-public interface LogDao {
+@Repository
+public interface LogDaoMapper {
 
     /**
      * 添加日志

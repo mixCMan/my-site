@@ -82,7 +82,6 @@ public class AttAchController {
         try {
             request.setCharacterEncoding( "utf-8" );
             response.setHeader( "Content-Type" , "text/html" );
-
             String fileName = TaleUtils.getFileKey(file.getOriginalFilename()).replaceFirst("/","");
 
             qiniuCloudService.upload(file, fileName);

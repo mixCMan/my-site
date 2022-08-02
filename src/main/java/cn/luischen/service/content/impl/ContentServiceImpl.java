@@ -3,11 +3,10 @@ package cn.luischen.service.content.impl;
 import cn.luischen.constant.ErrorConstant;
 import cn.luischen.constant.Types;
 import cn.luischen.constant.WebConst;
-import cn.luischen.dao.CommentDao;
-import cn.luischen.dao.ContentDao;
-import cn.luischen.dao.RelationShipDao;
+import cn.luischen.dao.CommentMapper;
+import cn.luischen.dao.ContentMapper;
+import cn.luischen.dao.RelationShipDaoMapper;
 import cn.luischen.dto.cond.ContentCond;
-import cn.luischen.dto.cond.MetaCond;
 import cn.luischen.exception.BusinessException;
 import cn.luischen.model.CommentDomain;
 import cn.luischen.model.ContentDomain;
@@ -32,16 +31,16 @@ import java.util.List;
 public class ContentServiceImpl implements ContentService {
 
     @Autowired
-    private ContentDao contentDao;
+    private ContentMapper contentMapper;
 
     @Autowired
-    private CommentDao commentDao;
+    private CommentMapper commentMapper;
 
     @Autowired
     private MetaService metaService;
 
     @Autowired
-    private RelationShipDao relationShipDao;
+    private RelationShipDaoMapper relationShipDaoMapper;
 
 
     @Transactional
@@ -63,7 +62,7 @@ public class ContentServiceImpl implements ContentService {
         String tags = contentDomain.getTags();
         String categories = contentDomain.getCategories();
 
-        contentDao.addArticle(contentDomain);
+        contentMapper.addArticle(contentDomain);
 
         int cid = contentDomain.getCid();
         metaService.addMetas(cid, tags, Types.TAG.getType());
@@ -76,18 +75,18 @@ public class ContentServiceImpl implements ContentService {
     public void deleteArticleById(Integer cid) {
         if (null == cid)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        contentDao.deleteArticleById(cid);
+        contentMapper.deleteArticleById(cid);
         //同时也要删除该文章下的所有评论
-        List<CommentDomain> comments = commentDao.getCommentsByCId(cid);
+        List<CommentDomain> comments = commentMapper.getCommentsByCId(cid);
         if (null != comments && comments.size() > 0){
             comments.forEach(comment ->{
-                commentDao.deleteComment(comment.getCoid());
+                commentMapper.deleteComment(comment.getCoid());
             });
         }
         //删除标签和分类关联
-        List<RelationShipDomain> relationShips = relationShipDao.getRelationShipByCid(cid);
+        List<RelationShipDomain> relationShips = relationShipDaoMapper.getRelationShipByCid(cid);
         if (null != relationShips && relationShips.size() > 0){
-            relationShipDao.deleteRelationShipByCid(cid);
+            relationShipDaoMapper.deleteRelationShipByCid(cid);
         }
 
     }
@@ -100,9 +99,9 @@ public class ContentServiceImpl implements ContentService {
         String tags = contentDomain.getTags();
         String categories = contentDomain.getCategories();
 
-        contentDao.updateArticleById(contentDomain);
+        contentMapper.updateArticleById(contentDomain);
         int cid = contentDomain.getCid();
-        relationShipDao.deleteRelationShipByCid(cid);
+        relationShipDaoMapper.deleteRelationShipByCid(cid);
         metaService.addMetas(cid, tags, Types.TAG.getType());
         metaService.addMetas(cid, categories, Types.CATEGORY.getType());
 
@@ -114,10 +113,10 @@ public class ContentServiceImpl implements ContentService {
     public void updateCategory(String ordinal, String newCatefory) {
         ContentCond cond = new ContentCond();
         cond.setCategory(ordinal);
-        List<ContentDomain> atricles = contentDao.getArticlesByCond(cond);
+        List<ContentDomain> atricles = contentMapper.getArticlesByCond(cond);
         atricles.forEach(atricle -> {
             atricle.setCategories(atricle.getCategories().replace(ordinal, newCatefory));
-            contentDao.updateArticleById(atricle);
+            contentMapper.updateArticleById(atricle);
         });
     }
 
@@ -127,7 +126,7 @@ public class ContentServiceImpl implements ContentService {
     @CacheEvict(value={"atricleCache","atricleCaches","siteCache"},allEntries=true,beforeInvocation=true)
     public void updateContentByCid(ContentDomain content) {
         if (null != content && null != content.getCid()) {
-            contentDao.updateArticleById(content);
+            contentMapper.updateArticleById(content);
         }
     }
 
@@ -136,7 +135,7 @@ public class ContentServiceImpl implements ContentService {
     public ContentDomain getArticleById(Integer cid) {
         if (null == cid)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        return contentDao.getArticleById(cid);
+        return contentMapper.getArticleById(cid);
     }
 
     @Override
@@ -145,7 +144,7 @@ public class ContentServiceImpl implements ContentService {
         if (null == contentCond)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
         PageHelper.startPage(pageNum, pageSize);
-        List<ContentDomain> contents = contentDao.getArticlesByCond(contentCond);
+        List<ContentDomain> contents = contentMapper.getArticlesByCond(contentCond);
         PageInfo<ContentDomain> pageInfo = new PageInfo<>(contents);
         return pageInfo;
     }
@@ -154,7 +153,7 @@ public class ContentServiceImpl implements ContentService {
     @Cacheable(value = "atricleCaches", key = "'recentlyArticle_' + #p0")
     public PageInfo<ContentDomain> getRecentlyArticle(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<ContentDomain> recentlyArticle = contentDao.getRecentlyArticle();
+        List<ContentDomain> recentlyArticle = contentMapper.getRecentlyArticle();
         PageInfo<ContentDomain> pageInfo = new PageInfo<>(recentlyArticle);
         return pageInfo;
     }
@@ -162,7 +161,7 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public PageInfo<ContentDomain> searchArticle(String param, int pageNun, int pageSize) {
         PageHelper.startPage(pageNun,pageSize);
-        List<ContentDomain> contentDomains = contentDao.searchArticle(param);
+        List<ContentDomain> contentDomains = contentMapper.searchArticle(param);
         PageInfo<ContentDomain> pageInfo = new PageInfo<>(contentDomains);
         return pageInfo;
     }

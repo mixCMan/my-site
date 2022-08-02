@@ -1,7 +1,7 @@
 package cn.luischen.service.comment.impl;
 
 import cn.luischen.constant.ErrorConstant;
-import cn.luischen.dao.CommentDao;
+import cn.luischen.dao.CommentMapper;
 import cn.luischen.dto.cond.CommentCond;
 import cn.luischen.exception.BusinessException;
 import cn.luischen.model.CommentDomain;
@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CommentServiceImpl implements CommentService {
 
     @Autowired
-    private CommentDao commentDao;
+    private CommentMapper commentMapper;
 
     @Autowired
     private ContentService contentService;
@@ -86,7 +86,7 @@ public class CommentServiceImpl implements CommentService {
             comments.setOwnerId(article.getAuthorId());
             comments.setStatus(STATUS_MAP.get(STATUS_BLANK));
             comments.setCreated(DateKit.getCurrentUnixTime());
-            commentDao.addComment(comments);
+            commentMapper.addComment(comments);
 
             ContentDomain temp = new ContentDomain();
             temp.setCid(article.getCid());
@@ -110,18 +110,18 @@ public class CommentServiceImpl implements CommentService {
         //查找当前评论是否有子评论
         CommentCond commentCond = new CommentCond();
         commentCond.setParent(coid);
-        CommentDomain comment = commentDao.getCommentById(coid);
-        List<CommentDomain> childComments = commentDao.getCommentsByCond(commentCond);
+        CommentDomain comment = commentMapper.getCommentById(coid);
+        List<CommentDomain> childComments = commentMapper.getCommentsByCond(commentCond);
         Integer count = 0;
         //删除子评论
         if (null != childComments && childComments.size() > 0){
             for (int i = 0; i < childComments.size(); i++) {
-                commentDao.deleteComment(childComments.get(i).getCoid());
+                commentMapper.deleteComment(childComments.get(i).getCoid());
                 count++;
             }
         }
         //删除当前评论
-        commentDao.deleteComment(coid);
+        commentMapper.deleteComment(coid);
         count++;
 
         //更新当前文章的评论数
@@ -139,7 +139,7 @@ public class CommentServiceImpl implements CommentService {
     public void updateCommentStatus(Integer coid, String status) {
         if (null == coid)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        commentDao.updateCommentStatus(coid, status);
+        commentMapper.updateCommentStatus(coid, status);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class CommentServiceImpl implements CommentService {
         if (null == coid)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
 
-        return commentDao.getCommentById(coid);
+        return commentMapper.getCommentById(coid);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class CommentServiceImpl implements CommentService {
     public List<CommentDomain> getCommentsByCId(Integer cid) {
         if (null == cid)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        return commentDao.getCommentsByCId(cid);
+        return commentMapper.getCommentsByCId(cid);
     }
 
     @Override
@@ -165,7 +165,7 @@ public class CommentServiceImpl implements CommentService {
         if (null == commentCond)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
         PageHelper.startPage(pageNum, pageSize);
-        List<CommentDomain> comments = commentDao.getCommentsByCond(commentCond);
+        List<CommentDomain> comments = commentMapper.getCommentsByCond(commentCond);
         PageInfo<CommentDomain> pageInfo = new PageInfo<>(comments);
         return pageInfo;
     }

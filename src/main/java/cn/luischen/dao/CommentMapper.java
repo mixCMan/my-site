@@ -5,6 +5,7 @@ import cn.luischen.model.CommentDomain;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -12,9 +13,8 @@ import java.util.List;
  * 评论实体类
  * Created by winterchen on 2018/4/29.
  */
-@Mapper
-@Component
-public interface CommentDao {
+@Repository
+public interface CommentMapper {
 
     /**
      * 新增评论

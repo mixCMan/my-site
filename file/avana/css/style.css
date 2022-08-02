@@ -247,7 +247,7 @@ main[role="main-home-wrapper"] article[role="pge-title-content"] header h2, main
 main[role="main-home-wrapper"] article[role="pge-title-content"] header h2 span, main[role="main-inner-wrapper"] article[role="pge-title-content"] header h2 span {
 	display: block;
 	font-size: 80px;
-	color: #fb5353;
+	color: #004eef;
 	padding-bottom: 15px
 }
 main[role="main-home-wrapper"] article[role="pge-title-content"] p, main[role="main-inner-wrapper"] article[role="pge-title-content"] p {
@@ -323,7 +323,7 @@ footer[role="footer"] .copy-right {
 /*===== About ===*/
 
 main[role="main-inner-wrapper"] .about-content {
-	background-color: #fb5353;
+	background-color: #004eef;
 	padding-top: 57px;
 	padding-left: 70px;
 	padding-right: 67px;
@@ -575,7 +575,7 @@ color:#404040;
 	display: block
 }
 .bog-header h3 span {
-	color: #fb5353
+	color: #004eef
 }
 .bog-header h2 {
 	font-size: 36px;

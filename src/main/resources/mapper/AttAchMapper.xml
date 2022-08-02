@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.luischen.dao.AttAchDao">
+<mapper namespace="cn.luischen.dao.AttAchMapper">
 
     <sql id="BASE_TABLE">
         t_attach
@@ -8,7 +8,7 @@
 
     <!-- 用户表 -->
     <sql id="TABLE_USER">
-        <include refid="cn.luischen.dao.UserDao.BASE_TABLE"/>
+        <include refid="cn.luischen.dao.UserDaoMapper.BASE_TABLE"/>
     </sql>
 
     <!-- 附件的基本列 -->

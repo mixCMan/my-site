@@ -1,7 +1,7 @@
 package cn.luischen.service.attach.impl;
 
 import cn.luischen.constant.ErrorConstant;
-import cn.luischen.dao.AttAchDao;
+import cn.luischen.dao.AttAchMapper;
 import cn.luischen.dto.AttAchDto;
 import cn.luischen.exception.BusinessException;
 import cn.luischen.model.AttAchDomain;
@@ -23,14 +23,14 @@ import java.util.List;
 public class AttAchServiceImpl implements AttAchService {
 
     @Autowired
-    private AttAchDao attAchDao;
+    private AttAchMapper attAchMapper;
 
     @Override
     @CacheEvict(value={"attCaches","attCache"},allEntries=true,beforeInvocation=true)
     public void addAttAch(AttAchDomain attAchDomain) {
         if (null == attAchDomain)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        attAchDao.addAttAch(attAchDomain);
+        attAchMapper.addAttAch(attAchDomain);
 
     }
 
@@ -39,7 +39,7 @@ public class AttAchServiceImpl implements AttAchService {
     public void batchAddAttAch(List<AttAchDomain> list) {
         if (null == list || list.size() == 0)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        attAchDao.batchAddAttAch(list);
+        attAchMapper.batchAddAttAch(list);
 
     }
 
@@ -48,7 +48,7 @@ public class AttAchServiceImpl implements AttAchService {
     public void deleteAttAch(Integer id) {
         if (null == id)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        attAchDao.deleteAttAch(id);
+        attAchMapper.deleteAttAch(id);
 
     }
 
@@ -57,7 +57,7 @@ public class AttAchServiceImpl implements AttAchService {
     public void updateAttAch(AttAchDomain attAchDomain) {
         if (null == attAchDomain || null == attAchDomain.getId())
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        attAchDao.updateAttAch(attAchDomain);
+        attAchMapper.updateAttAch(attAchDomain);
 
     }
 
@@ -66,14 +66,17 @@ public class AttAchServiceImpl implements AttAchService {
     public AttAchDto getAttAchById(Integer id) {
         if (null == id)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        return attAchDao.getAttAchById(id);
+        return attAchMapper.getAttAchById(id);
     }
 
     @Override
     @Cacheable(value = "attCaches", key = "'atts' + #p0")
     public PageInfo<AttAchDto> getAtts(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<AttAchDto> atts = attAchDao.getAtts();
+        List<AttAchDto> atts = attAchMapper.getAtts();
+        atts.stream().forEach(att->{
+            att.setFkey("http://"+att.getFkey());
+        });
         PageInfo<AttAchDto> pageInfo = new PageInfo<>(atts);
         return pageInfo;
     }

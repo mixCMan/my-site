@@ -1,7 +1,7 @@
 package cn.luischen.service.log.impl;
 
 import cn.luischen.constant.ErrorConstant;
-import cn.luischen.dao.LogDao;
+import cn.luischen.dao.LogDaoMapper;
 import cn.luischen.exception.BusinessException;
 import cn.luischen.model.LogDomain;
 import cn.luischen.service.log.LogService;
@@ -20,7 +20,7 @@ import java.util.List;
 public class LogServiceImpl implements LogService {
 
     @Autowired
-    private LogDao logDao;
+    private LogDaoMapper logDaoMapper;
 
     @Override
     public void addLog(String action, String data, String ip, Integer authorId) {
@@ -29,7 +29,7 @@ public class LogServiceImpl implements LogService {
         logDomain.setIp(ip);
         logDomain.setData(data);
         logDomain.setAction(action);
-        logDao.addLog(logDomain);
+        logDaoMapper.addLog(logDomain);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class LogServiceImpl implements LogService {
     @Override
     public PageInfo<LogDomain> getLogs(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        List<LogDomain> logs = logDao.getLogs();
+        List<LogDomain> logs = logDaoMapper.getLogs();
         PageInfo<LogDomain> pageInfo = new PageInfo<>(logs);
         return pageInfo;
     }

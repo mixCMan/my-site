@@ -6,6 +6,7 @@ import cn.luischen.model.ContentDomain;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -13,9 +14,8 @@ import java.util.List;
  * 文章持久层
  * Created by winterchen on 2018/4/29.
  */
-@Mapper
-@Component
-public interface ContentDao {
+@Repository
+public interface ContentMapper {
 
     /**
      * 添加文章

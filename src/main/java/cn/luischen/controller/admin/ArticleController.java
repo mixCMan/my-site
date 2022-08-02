@@ -12,6 +12,7 @@ import cn.luischen.service.content.ContentService;
 import cn.luischen.service.log.LogService;
 import cn.luischen.service.meta.MetaService;
 import cn.luischen.utils.APIResponse;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 文章管理
@@ -209,5 +212,93 @@ public class ArticleController extends BaseController {
             contentService.deleteArticleById(cid);
             logService.addLog(LogActions.DEL_ARTICLE.getAction(), cid + "", request.getRemoteAddr(), this.getUid(request));
             return APIResponse.success();
+    }
+    public static void main(String[] args) {
+        doubleColor();
+//        bigHappy();
+    }
+    private static void bigHappy() {
+        List<Integer> red = new ArrayList<>();
+        List<Integer> blue = new ArrayList<>();
+        List<Integer> last = new ArrayList<>();
+        List<Integer> rand = new ArrayList<>();
+
+        for(int i =1; i<=35;i++){
+            red.add(i);
+        }
+        System.out.println("red:"+ JSON.toJSONString(red));
+        for(int j = 1; j <= 12; j++){
+            blue.add(j);
+        }
+        System.out.println("blue:"+ JSON.toJSONString(blue));
+
+        for(int l=0;l<6;l++){
+            Integer random = getRandom(rand, red.size());
+            last.add(red.get(random));
+        }
+        System.out.println("last-red:"+ JSON.toJSONString(last));
+        System.out.println("lrand:"+ JSON.toJSONString(rand));
+
+        for(int f=last.size()-1;f>=0;f--){
+            for(int s=0;s<f;s++){
+                if(last.get(s)>last.get(s+1)){
+                    int b = last.get(s+1);
+                    last.set(s+1,last.get(s));
+                    last.set(s,b);
+                }
+            }
+        }
+        for(int l=0;l<2;l++){
+            Integer random = getRandom(rand, blue.size());
+            last.add(blue.get(random));
+        }
+        System.out.println("last-blue:"+ JSON.toJSONString(last));
+    }
+    private static void doubleColor() {
+        List<Integer> red = new ArrayList<>();
+        List<Integer> blue = new ArrayList<>();
+        List<Integer> last = new ArrayList<>();
+        List<Integer> rand = new ArrayList<>();
+
+        for(int i =1; i<=33;i++){
+            red.add(i);
+        }
+        System.out.println("red:"+ JSON.toJSONString(red));
+        for(int j = 1; j <= 16; j++){
+            blue.add(j);
+        }
+        System.out.println("blue:"+ JSON.toJSONString(blue));
+
+        for(int l=0;l<5;l++){
+            Integer random = getRandom(rand, red.size());
+            last.add(red.get(random));
+        }
+        System.out.println("last-red:"+ JSON.toJSONString(last));
+        System.out.println("lrand:"+ JSON.toJSONString(rand));
+
+        int i = new Random().nextInt(blue.size());
+        System.out.println("rendom count:"+ i);
+        for(int f=last.size()-1;f>=0;f--){
+            for(int s=0;s<f;s++){
+                if(last.get(s)>last.get(s+1)){
+                    int b = last.get(s+1);
+                    last.set(s+1,last.get(s));
+                    last.set(s,b);
+                }
+            }
+        }
+        last.add(blue.get(i));
+        System.out.println("last-blue:"+ JSON.toJSONString(last));
+    }
+
+    public static Integer getRandom(List<Integer> rand,int size){
+        int i = new Random().nextInt(size);
+        System.out.println("rendom count:"+ i);
+        if(rand.contains(i)){
+           return getRandom(rand,size);
+        }
+        rand.add(i);
+        return  i;
+
     }
 }

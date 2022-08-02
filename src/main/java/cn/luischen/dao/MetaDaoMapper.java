@@ -6,6 +6,7 @@ import cn.luischen.model.MetaDomain;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -14,9 +15,8 @@ import java.util.Map;
  * 项目dao
  * Created by winterchen on 2018/4/29.
  */
-@Mapper
-@Component
-public interface MetaDao {
+@Repository
+public interface MetaDaoMapper {
 
     /**
      * 添加项目

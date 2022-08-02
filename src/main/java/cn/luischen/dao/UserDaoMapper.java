@@ -1,14 +1,14 @@
 package cn.luischen.dao;
 
 import cn.luischen.model.UserDomain;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by winterchen on 2018/4/20.
  */
-@Mapper
-public interface UserDao {
+@Repository
+public interface UserDaoMapper {
 
     /**
      * @Author: winterchen
@@ -34,4 +34,5 @@ public interface UserDao {
      */
     UserDomain getUserInfoByCond(@Param("username") String username, @Param("password") String password);
 
+    void fileTest(UserDomain user);
 }

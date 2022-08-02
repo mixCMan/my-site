@@ -2,6 +2,7 @@ package cn.luischen.service.user;
 
 import cn.luischen.model.UserDomain;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import org.springframework.stereotype.Service;
 /**

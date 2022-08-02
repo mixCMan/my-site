@@ -1,7 +1,7 @@
 package cn.luischen.service.option.impl;
 
 import cn.luischen.constant.ErrorConstant;
-import cn.luischen.dao.OptionDao;
+import cn.luischen.dao.OptionDaoMapper;
 import cn.luischen.exception.BusinessException;
 import cn.luischen.model.OptionsDomain;
 import cn.luischen.service.option.OptionService;
@@ -23,14 +23,14 @@ import java.util.Map;
 public class OptionServiceImpl implements OptionService {
 
     @Autowired
-    private OptionDao optionDao;
+    private OptionDaoMapper optionDaoMapper;
 
     @Override
     @CacheEvict(value={"optionsCache","optionCache"},allEntries=true,beforeInvocation=true)
     public void deleteOptionByName(String name) {
         if(StringUtils.isBlank(name))
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        optionDao.deleteOptionByName(name);
+        optionDaoMapper.deleteOptionByName(name);
 
     }
 
@@ -43,7 +43,7 @@ public class OptionServiceImpl implements OptionService {
         OptionsDomain option = new OptionsDomain();
         option.setName(name);
         option.setValue(value);
-        optionDao.updateOptionByName(option);
+        optionDaoMapper.updateOptionByName(option);
 
     }
 
@@ -61,12 +61,12 @@ public class OptionServiceImpl implements OptionService {
     public OptionsDomain getOptionByName(String name) {
         if(StringUtils.isBlank(name))
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        return optionDao.getOptionByName(name);
+        return optionDaoMapper.getOptionByName(name);
     }
 
     @Override
     @Cacheable(value = "optionsCache", key = "'options_'")
     public List<OptionsDomain> getOptions() {
-        return optionDao.getOptions();
+        return optionDaoMapper.getOptions();
     }
 }

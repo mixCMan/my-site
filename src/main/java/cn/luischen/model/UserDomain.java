@@ -26,6 +26,16 @@ public class UserDomain {
     /** 用户组 */
     private String groupName;
 
+    /** 用户组 */
+    private byte[] file;
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
+    }
+
     public Integer getUid() {
         return uid;
     }

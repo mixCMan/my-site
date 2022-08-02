@@ -3,10 +3,10 @@ package cn.luischen.service.site.impl;
 import cn.luischen.constant.ErrorConstant;
 import cn.luischen.constant.Types;
 import cn.luischen.constant.WebConst;
-import cn.luischen.dao.AttAchDao;
-import cn.luischen.dao.CommentDao;
-import cn.luischen.dao.ContentDao;
-import cn.luischen.dao.MetaDao;
+import cn.luischen.dao.AttAchMapper;
+import cn.luischen.dao.CommentMapper;
+import cn.luischen.dao.ContentMapper;
+import cn.luischen.dao.MetaDaoMapper;
 import cn.luischen.dto.ArchiveDto;
 import cn.luischen.dto.MetaDto;
 import cn.luischen.dto.StatisticsDto;
@@ -18,14 +18,13 @@ import cn.luischen.model.ContentDomain;
 import cn.luischen.service.site.SiteService;
 import cn.luischen.utils.DateKit;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,17 +39,17 @@ public class SiteServiceImpl implements SiteService{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SiteServiceImpl.class);
 
-    @Autowired
-    private CommentDao commentDao;
+    @Resource
+    private CommentMapper commentMapper;
 
-    @Autowired
-    private ContentDao contentDao;
+    @Resource
+    private ContentMapper contentMapper;
 
-    @Autowired
-    private MetaDao metaDao;
+    @Resource
+    private MetaDaoMapper metaDaoMapper;
 
-    @Autowired
-    private AttAchDao attAchDao;
+    @Resource
+    private AttAchMapper attAchMapper;
 
     @Override
     @Cacheable(value = "siteCache", key = "'comments_' + #p0")
@@ -60,7 +59,7 @@ public class SiteServiceImpl implements SiteService{
             limit = 10;
         }
         PageHelper.startPage(1, limit);
-        List<CommentDomain> rs = commentDao.getCommentsByCond(new CommentCond());
+        List<CommentDomain> rs = commentMapper.getCommentsByCond(new CommentCond());
         LOGGER.debug("Exit recentComments method");
         return rs;
     }
@@ -72,7 +71,7 @@ public class SiteServiceImpl implements SiteService{
         if (limit < 0 || limit > 10)
             limit = 10;
         PageHelper.startPage(1, limit);
-        List<ContentDomain> rs = contentDao.getArticlesByCond(new ContentCond());
+        List<ContentDomain> rs = contentMapper.getArticlesByCond(new ContentCond());
         LOGGER.debug("Exit recentArticles method");
         return rs;
     }
@@ -83,7 +82,7 @@ public class SiteServiceImpl implements SiteService{
         LOGGER.debug("Enter recentComment method");
         if (null == coid)
             throw BusinessException.withErrorCode(ErrorConstant.Common.PARAM_IS_EMPTY);
-        CommentDomain comment = commentDao.getCommentById(coid);
+        CommentDomain comment = commentMapper.getCommentById(coid);
         LOGGER.debug("Exit recentComment method");
         return comment;
     }
@@ -93,13 +92,13 @@ public class SiteServiceImpl implements SiteService{
     public StatisticsDto getStatistics() {
         LOGGER.debug("Enter recentStatistics method");
         //文章总数
-        Long artices = contentDao.getArticleCount();
+        Long artices = contentMapper.getArticleCount();
 
-        Long comments = commentDao.getCommentsCount();
+        Long comments = commentMapper.getCommentsCount();
 
-        Long links = metaDao.getMetasCountByType(Types.LINK.getType());
+        Long links = metaDaoMapper.getMetasCountByType(Types.LINK.getType());
 
-        Long atts = attAchDao.getAttsCount();
+        Long atts = attAchMapper.getAttsCount();
 
         StatisticsDto rs = new StatisticsDto();
         rs.setArticles(artices);
@@ -115,7 +114,7 @@ public class SiteServiceImpl implements SiteService{
     @Cacheable(value = "siteCache", key = "'archivesSimple_' + #p0")
     public List<ArchiveDto> getArchivesSimple(ContentCond contentCond) {
         LOGGER.debug("Enter getArchives method");
-        List<ArchiveDto> archives = contentDao.getArchive(contentCond);
+        List<ArchiveDto> archives = contentMapper.getArchive(contentCond);
         LOGGER.debug("Exit getArchives method");
         return archives;
     }
@@ -124,7 +123,7 @@ public class SiteServiceImpl implements SiteService{
     @Cacheable(value = "siteCache", key = "'archives_' + #p0")
     public List<ArchiveDto> getArchives(ContentCond contentCond) {
         LOGGER.debug("Enter getArchives method");
-        List<ArchiveDto> archives = contentDao.getArchive(contentCond);
+        List<ArchiveDto> archives = contentMapper.getArchive(contentCond);
         parseArchives(archives, contentCond);
         LOGGER.debug("Exit getArchives method");
         return archives;
@@ -143,7 +142,7 @@ public class SiteServiceImpl implements SiteService{
                 cond.setStartTime(start);
                 cond.setEndTime(end);
                 cond.setType(contentCond.getType());
-                List<ContentDomain> contentss = contentDao.getArticlesByCond(cond);
+                List<ContentDomain> contentss = contentMapper.getArticlesByCond(cond);
                 archive.setArticles(contentss);
             });
         }
@@ -165,7 +164,7 @@ public class SiteServiceImpl implements SiteService{
             paraMap.put("type", type);
             paraMap.put("order", orderBy);
             paraMap.put("limit", limit);
-            retList= metaDao.selectFromSql(paraMap);
+            retList= metaDaoMapper.selectFromSql(paraMap);
         }
         LOGGER.debug("Exit metas method");
         return retList;
