@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<!--导入Thymeleaf命名空间-->
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<div th:replace="site/head::head(${commons.site_title()},${commons.google_site_verification()}, ${commons.baidu_site_verification()})"></div>
+
+
+<body>
+
+<div th:replace="site/header::header"></div>
+<div class="container">
+    <div class="jumbotron">
+        <p>香气沈沈应乾坤，燃起清香透天门；金鸟奔走如云箭，玉兔光辉似车轮；</p>
+        <p></p>
+        <p>南辰北斗满天照，五色彩云闹纷纷；紫微宫中开圣殿，桃花玉女请神仙；</p>
+        <p></p>
+        <p>千里路途香伸请，飞云走马降来临；拜请本坛三恩主，列圣金刚众诸尊；</p>
+        <p></p>
+        <p>玄天真武大将军，五方五帝显如云；看山雪山二大圣，金咤木咤哪咤郎；</p>
+        <p></p>
+        <p>扶到乩童来开口，指点弟子好甚分明。</p>
+
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <h3>大乐透</h3>
+            <p id ="bigHappy" onclick="bigHappy()">神兵急急如律令。</p>
+
+        </div>
+        <div class="col-sm-4">
+
+        </div>
+        <div class="col-sm-4">
+            <h3>双色球</h3>
+            <p id="doubleColor" onclick="doubleColor()">神兵急急如律令。</p>
+        </div>
+    </div>
+</div>
+
+<div th:replace="site/footer::footer(${commons.site_title()},${commons.site_record()},${commons.site_url()})"></div>
+
+</body>
+<script type="text/javascript" th:inline="javascript">
+
+    function bigHappy(){
+        $.ajax({
+            type: 'post',
+            url: '/roulette/bigHappy',
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                if (result && result.code == 'success') {
+                    let numberList = result.data;
+                    var red ='';
+                    for(let i = 0;i<numberList.length;i++){
+                        red+=numberList[i]+",";
+                    }
+                    red = red.substring(0,red.length-1);
+                    // $('#number').val(red);
+                    var element = document.createElement("p");
+                    var text = document.createTextNode(red);
+                    // element.innerText(red);
+                    var big = document.getElementById('bigHappy')
+                    element.appendChild(text);
+                    big.appendChild(element);
+                    // $('.tabs').find()
+                } else {
+                    if (result.msg) {
+                        alert(result.msg);
+                    }
+                }
+            }
+        });
+
+    }
+    function doubleColor(){
+        $.ajax({
+            type: 'post',
+            url: '/roulette/doubleColor',
+            async: false,
+            dataType: 'json',
+            success: function (result) {
+                if (result && result.code == 'success') {
+                    let numberList = result.data;
+                    var red ='';
+                    for(let i = 0;i<numberList.length;i++){
+                        red+=numberList[i]+",";
+                    }
+                    red = red.substring(0,red.length-1);
+                    // $('#number').val(red);
+                    var element = document.createElement("p");
+                    var text = document.createTextNode(red);
+                    // element.innerText(red);
+                    var big = document.getElementById('doubleColor')
+                    element.appendChild(text);
+                    big.appendChild(element);
+                } else {
+                    if (result.msg) {
+                        alert(result.msg);
+                    }
+                }
+            }
+        });
+
+    }
+
+</script>
+</html>
